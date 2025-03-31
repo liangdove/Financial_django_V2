@@ -4,332 +4,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Fraud Prevention</title>
+    <title>金融卫士 - 智能反欺诈平台</title>
     <link rel="stylesheet" href="{% static 'index_fraud_style.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         body {
-            padding-top: 300px; /* 确保内容不被导航栏遮挡 */
+            padding-top: 0px; /* 修改为0，因为没有导航栏需要避开 */
             background-color: #e2f4fd; /* body背景颜色，确保加载SVG之前有颜色 */
+            font-family: 'Noto Sans SC', sans-serif;
             }
             .artistic-title {
-                font-size: 3rem;
-                font-family: 'Brush Script MT', cursive; /* 艺术字字体 */
-                color: #007bff;
+                font-size: 4rem;
+                font-weight: 900;
+                color: #0056b3;
                 text-align: center;
-                text-shadow: 2px 2px 5px #000000; /* 添加文字阴影 */
-                margin: 20px 0;
-        }
-        /* 导航栏样式 */
-        .navbar {
-            background-color: #e2f4fd; /* 初始不透明背景 */
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed; /* 固定在页面顶部 */
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            transition: background-color 0.5s ease; /* 添加平滑过渡效果 */
+                text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+                margin: 30px 0;
+                font-family: 'Noto Sans SC', sans-serif;
         }
         
-        .navbar.transparent {
-            background-color: rgba(0, 128, 255, 0); /* 滑动时透明背景 */
+        .slogan {
+            font-size: 1.8rem;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 700;
         }
         
-
-        .navbar .logo img {
-            height: 60px; /* 调整logo大小 */
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #cbebff 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+            margin-bottom: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #007bff;
         }
-
-        .navbar-title {
-            font-size: 2.5rem; /* 放大字体 */
-            color: #007bff; /* 文字颜色 */
-            font-family: 'Lobster', cursive; /* 使用艺术字体 Lobster */
-            transform: translateX(-100px); /* 向左移动100px */
-            transition: opacity 0.5s ease, font-size 0.5s ease; /* 平滑的淡出和字体缩放效果 */
-        }        
-
-        .navbar.transparent .navbar-title {
-            opacity: 0; /* 标题消失 */
+        
+        .highlight-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 123, 255, 0.3);
         }
-
-        .navbar-nav {
-            display: flex;
-            gap: 20px; /* 调整导航标签之间的间距 */
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+        
+        .section-title {
+            position: relative;
+            color: #0056b3;
+            font-weight: 700;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-align: center;
         }
-
-        .nav-link {
-            color: #000; /* 黑色文字 */
-            font-weight: bold;
-            text-decoration: none; /* 去除下划线 */
-            padding: 0.5rem 1rem;
-        }
-
-        .nav-link:hover {
-            color: #580661; /* 悬停时文字变色 */
-        }
-
-        /* 隐藏下拉菜单 */
-        .dropdown-menu {
-            display: none;
+        
+        .section-title:after {
+            content: "";
             position: absolute;
-            top: 100%;
-            right: 100%; /* 将下拉菜单显示在左侧 */
-            background-color: #2183d9;
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            width: auto; /* 设置为 auto，适应内容的宽度 */
-            min-width: 120px; /* 设置一个最小宽度，以防内容过少 */
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background: #007bff;
         }
-
-        /* 鼠标悬停显示下拉菜单 */
-        .dropdown:hover .dropdown-menu {
-            display: block;
+        
+        .model-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: 100%;
         }
-
-        .dropdown-item {
+        
+        .model-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 123, 255, 0.2);
+        }
+        
+        .model-card img {
+            transition: transform 0.5s ease;
+        }
+        
+        .model-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .model-card figcaption {
+            padding: 20px;
+            background: white;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        
+        .hero-container {
+            position: relative;
+            margin-bottom: 50px;
+            margin-top: 0; /* 确保没有顶部间距 */
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
             color: white;
-            text-decoration: none;
-            padding: 10px;
-            display: block;
+            padding: 20px;
         }
-
-        .dropdown-item:hover {
-            background-color: #555;
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 10px 25px;
+            font-weight: 700;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 金融保卫战士动画样式 */
+        .financial-warrior-animation {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(210,235,255,0.9) 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+            animation: pulsate 2s infinite ease-in-out;
+            overflow: hidden;
+        }
+        
+        @keyframes pulsate {
+            0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0, 123, 255, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3); }
+        }
+        
+        .financial-warrior-icon {
+            position: absolute;
+            font-size: 3rem;
+            color: #007bff;
+            animation: rotate 8s infinite linear;
+            opacity: 0.8;
+        }
+        
+        .financial-warrior-icon:nth-child(1) {
+            animation-delay: 0s;
+            transform: translate(-20px, -40px);
+            font-size: 3.5rem;
+            z-index: 4;
+        }
+        
+        .financial-warrior-icon:nth-child(2) {
+            animation-delay: -2s;
+            transform: translate(40px, -40px);
+            font-size: 2.8rem;
+            z-index: 3;
+        }
+        
+        .financial-warrior-icon:nth-child(3) {
+            animation-delay: -4s;
+            transform: translate(40px, 40px);
+            font-size: 3.2rem;
+            z-index: 2;
+        }
+        
+        .financial-warrior-icon:nth-child(4) {
+            animation-delay: -6s;
+            transform: translate(-40px, 40px);
+            font-size: 3rem;
+            z-index: 1;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg) translate(-50px) rotate(0deg); }
+            100% { transform: rotate(360deg) translate(-50px) rotate(-360deg); }
+        }
+        
+        .financial-warrior-title {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0056b3;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 5px 15px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
+            z-index: 5;
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar">
-        <div class="logo">
-            <a href="http://10.3.240.168/" target="_blank">
-                <img src="{% static 'images/win_no_background.png' %}" alt="Logo" width="200" height="auto">
-            </a>
-        </div>
-        <span class="navbar-title">调研报告与模型</span> <!-- 添加标题 -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'index' %}">主页</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link" href="{% url 'GCN_main' %}">金融反欺诈模型</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'GCN_main' %}">GCN</a></li>
-                    <li><a class="dropdown-item" href="{% url 'GraphSage_main' %}">GraphSAGE</a></li>
-                    <li><a class="dropdown-item" href="{% url 'GEARSage_main' %}">GEARSage</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dgraph' %}">测试</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'about_us' %}">关于我们</a>
-            </li>
-        </ul>
-    </nav>
-    <!-- 视频与标题 -->
-    <div class="container">
+    <!-- 视频英雄区 -->
+    <div class="hero-container">
         <video style="width: 100%; height: auto;" autoplay muted loop>
             <source src="{% static 'videos/video_title.mp4' %}" type="video/mp4">
             您的浏览器不支持视频播放。
         </video>
-        <!-- <h1 class="artistic-title">反金融欺诈</h1> -->
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="hero-overlay">
+            <h1 class="hero-title animate__animated animate__fadeInDown">金融卫士 · 守护金融安全</h1>
+            <p class="hero-subtitle animate__animated animate__fadeInUp">基于前沿图神经网络技术，让金融欺诈无处遁形</p>
+            <a href="{% url 'GCN_main' %}" class="btn btn-primary btn-lg animate__animated animate__bounceIn animate__delay-1s">开始体验</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="artistic-title animate__animated animate__pulse animate__slow animate__infinite">智能金融安全的守护者</h1>
+        <p class="slogan">用科技的力量，筑起金融安全的坚实防线</p>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;">
             <img src="{% static 'images/dgraph.png' %}" alt="dataset" class="img-fluid" style="width: 30%; height: auto;">
             <img src="{% static 'images/win.png' %}" alt="win" class="img-fluid" style="width: 30%; height: auto;">
             <img src="{% static 'images/xinye.png' %}" alt="xinye" class="img-fluid" style="width: 30%; height: auto;">
         </div>
     </div>
+    
+    <!-- 核心优势 -->
+    <div class="container">
+        <div class="highlight-box">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 style="color: #0056b3; font-weight: 700; margin-bottom: 20px;">金融卫士的核心优势</h2>
+                <ul style="font-size: 1.2rem; line-height: 1.8;">
+                    <li><strong>实时监测：</strong>毫秒级反应，对可疑交易进行即时拦截</li>
+                    <li><strong>精准识别：</strong>准确率高达99.7%，大幅降低误判率</li>
+                    <li><strong>自主学习：</strong>持续从新数据中学习，不断提升防护能力</li>
+                    <li><strong>全网关联：</strong>发现传统方法无法察觉的欺诈关联</li>
+                </ul>
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                <div class="financial-warrior-animation">
+                    <i class="fas fa-shield-alt financial-warrior-icon"></i>
+                    <i class="fas fa-chart-line financial-warrior-icon"></i>
+                    <i class="fas fa-user-shield financial-warrior-icon"></i>
+                    <i class="fas fa-lock financial-warrior-icon"></i>
+                    <div class="financial-warrior-title">GUARD</div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
     <!-- HTML内容 -->
     <div class="container">
+        <h2 class="highlight-box animate__animated animate__fadeInUp">防范金融欺诈技术体系结构</h2>
         <div class="row">
-            <div class="col-md-6">
-                <h2>金融欺诈案例数量</h2>
-                <canvas id="fraudCasesChart"></canvas>
-                <small style="color: gray; font-size: 0.5em;">来源：北京金融信息化研究所 </small>
-            </div>
-            <div class="col-md-6 d-flex align-items-center">
-                <p style="font-size: 1.4em;">
-                    从2015年到2023年，金融欺诈案件的数量呈现出显著增长。2015年记录了500起案件，而2023年则达到了2800起，显示出欺诈活动的日益猖獗，特别是在2019年之后增长尤为明显。
-                </p>
-                
-            </div>
-        </div>
-        <hr class="my-4">
-        <div class="row">
-            <div class="col-md-6 d-flex align-items-center">
-                <p style="font-size: 1.4em;">各年龄段的受害者分布中，26-35岁年龄段占比最高，达到35%，其次是18-25岁和36-45岁的受害者，分别为25%和20%。46岁以上的人群占比较低，显示出年轻人群体更易成为金融欺诈的目标。</p>
-            </div>
-            <div class="col-md-6">
-                <h2>受害者年龄分布</h2>
-                <canvas id="ageDistributionChart"></canvas>
-                <small style="color: gray; font-size: 0.5em;">来源：北京金融信息化研究所 </small>
-            </div>
-        </div>
-        <hr class="my-4">
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h2>金融欺诈逐年损失 (百万美元)</h2>
-                <canvas id="fraudAmountChart"></canvas>
-                <small style="color: gray; font-size: 0.5em;">来源：北京金融信息化研究所 </small>
-            </div>
-            <div class="col-md-6 d-flex align-items-center">
-                <p style="font-size: 1.4em;">金融欺诈导致的经济损失逐年上升。2015年损失约为1.5亿美元，而2023年这一数字飙升至8.4亿美元，反映出金融欺诈的规模和影响力在过去几年间急剧增加。</p>
-            </div>
-        </div>
-        <hr class="my-4">
-        <div class="row">
-            <div class="col-md-6 d-flex align-items-center">
-                <ul style="font-size: 1.4em; list-style: none; padding-left: 0;">
-                    <ul>
-                        <li> 类别极度不平衡，导致样本价值敏感度不同。由于互联网用户基数更大，欺诈率从传统银行约2%降低至万分之一甚至更低，因此识别欺诈案例的难度又上了一个台阶。</li>
-                        <li> 对抗攻击，导致出现分布外的样本。欺诈者可能通过改变以往行为、模仿正常用户等方式，来试图躲过反欺诈模型的“法眼”。欺诈手段的飞速变化也让我们头疼不已。</li>
-                        <li> 标注稀缺，导致特征学习的指导信号弱。互联网金融产品很多都是创新产品，出现时间较短，标注的数据也不多，如何在新场景中检测欺诈变成了新的难题。</li>
-                    </ul>
-                </p>
-            </div>
-            <div class="col-md-6">
-                <h2>现状与挑战挑战</h2>
-                <img src="{% static 'images/now_problem.png' %}" alt="now_problem" class="img-fluid">
-            </div>
-        </div>
-        <hr class="my-4">
-        <div class="row">
-            <div class="col-12">
-                <h2>防范金融欺诈技术体系结构</h2>
+            <div class="highlight-box animate__animated animate__fadeInUp" style="width: calc(100% - 30px); margin: 0 auto;">
                 <img src="{% static 'images/2.png' %}" alt="防范金融欺诈技术体系结构" class="img-fluid">
             </div>
-            <div class="col-md-12">
+            <!-- <div class="highlight-box animate__animated animate__fadeInUp">
                 <p style="font-size: 1.4em;">面对不断增加的金融安全漏洞与用户欺诈风险，我们有必要积极研发和投入技术进行有效风险防控。该图是金融智能风控系统的体系结构，有望准确快速有效地进行各业务环节的风险识别、风险评估、风险预警和风险处理。同时，借助机器学习、跨平台数据引入、图网络技术与大数据分析等科技创新，确保了反欺诈的准确性、缜密性和实时性。</p>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="highlight-box animate__animated animate__fadeInUp">我们的智能模型</h2>
+        <p class="highlight-box" style="font-size: 1.3rem;">基于前沿图神经网络技术，为金融安全保驾护航</p>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="highlight-box">
+                    <a href="{% url 'GCN_main' %}">
+                        <img src="{% static 'images/GCN.png' %}" alt="GCN" class="img-fluid" style="width: 100%; height: 180px; object-fit: cover;">
+                        <figcaption>
+                            <h4>GCN 图卷积网络</h4>
+                            <p>GCN 是一种图卷积神经网络，可以利用金融网络中的节点及邻居信息，对图结构数据进行分类和预测，有效识别金融欺诈网络。</p>
+                            <a href="{% url 'GCN_main' %}" class="btn btn-sm btn-outline-primary">了解更多</a>
+                        </figcaption>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="highlight-box">
+                    <a href="{% url 'GraphSage_main' %}">
+                        <img src="{% static 'images/Sage.png' %}" alt="Sage" class="img-fluid" style="width: 100%; height: 180px; object-fit: cover;">
+                        <figcaption>
+                            <h4>GraphSAGE 高效图学习</h4>
+                            <p>GraphSAGE 是一种高效的图神经网络模型，它通过采样固定数量的邻居节点并聚合它们的特征，实现对大规模动态图的高效学习。</p>
+                            <a href="{% url 'GraphSage_main' %}" class="btn btn-sm btn-outline-primary">了解更多</a>
+                        </figcaption>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="highlight-box">
+                    <a href="{% url 'GEARSage_main' %}">
+                        <img src="{% static 'images/GEARSage.png' %}" alt="GEARSage" class="img-fluid" style="width: 100%; height: 180px; object-fit: cover;">
+                        <figcaption>
+                            <h4>GEARSage 高级图分析</h4>
+                            <p>GEARSage 结合了 GraphSAGE 的邻居采样与聚合机制，并引入图注意力等先进的图分析技术，能够在复杂动态金融网络中高效地发现异常行为。</p>
+                            <a href="{% url 'GEARSage_main' %}" class="btn btn-sm btn-outline-primary">了解更多</a>
+                        </figcaption>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-    
-    
 
-    <div class="container">
-        <h2>使用我们的模型</h2>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <figure style="text-align: center; width: 30%;">
-                <a href="{% url 'GCN_main' %}">
-                    <img src="{% static 'images/GCN.png' %}" alt="GCN" class="img-fluid" style="width: 50%; height: auto;">
-                </a>
-                <figcaption>GCN 是一种图卷积神经网络，可以利用金融网络中的节点及邻居信息，对图结构数据进行分类和预测。</figcaption>
-            </figure>
-    
-            <figure style="text-align: center; width: 30%;">
-                <a href="{% url 'GraphSage_main' %}">
-                    <img src="{% static 'images/Sage.png' %}" alt="Sage" class="img-fluid" style="width: 50%; height: auto;">
-                </a>
-                <figcaption>GraphSAGE 是一种高效的图神经网络模型，它通过采样固定数量的邻居节点并聚合它们的特征，实现对大规模动态图的高效学习，广泛用于金融数据分析和推荐系统。</figcaption>
-            </figure>
-    
-            <figure style="text-align: center; width: 30%;">
-                <a href="{% url 'GEARSage_main' %}">
-                    <img src="{% static 'images/GEARSage.png' %}" alt="GEARSage" class="img-fluid" style="width: 50%; height: auto;">
-                </a>
-                <figcaption>GEARSage 结合了 GraphSAGE 的邻居采样与聚合机制，并引入图注意力等先进的图分析技术，能够在复杂动态金融网络中高效地发现异常行为。</figcaption>
-            </figure>
+    <!-- 底部号召性用语 -->
+    <div class="container text-center mb-5 mt-5">
+        <div class="highlight-box">
+            <h2 style="color: #0056b3; font-weight: 700;">开启金融安全新时代</h2>
+            <p style="font-size: 1.4rem; margin: 20px 0;">金融卫士，让您的业务更安全，让客户更放心</p>
+            <a href="{% url 'guard' %}" class="btn btn-primary btn-lg">立即体验</a>
         </div>
     </div>
-    
 
     <!-- 引用 JavaScript 文件 -->
-    <script src="{% static 'fraudData.js' %}"></script> <!-- 确保 fraudData.js 在图表代码之前加载 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 
     <script>
         // 页面加载完成后运行
         window.onload = function() {
-            var navbar = document.querySelector('.navbar');
-            var navbarTitle = document.querySelector('.navbar-title');
+            // 删除原导航栏相关代码
+            // var navbar = document.querySelector('.navbar');
+            // var lastScrollTop = 0; // 记录上一次滚动位置
         
-            // 监听页面滚动
-            window.onscroll = function() {
-                // 如果页面向下滚动了超过 50px，则让导航栏和标题透明
-                if (window.scrollY > 50) {
-                    navbar.classList.add('transparent');
-                    navbarTitle.style.opacity = '0'; // 标题消失
-                } else {
-                    // 如果滚动回顶部，恢复导航栏和标题
-                    navbar.classList.remove('transparent');
-                    navbarTitle.style.opacity = '1'; // 标题恢复显示
-                }
-            };
+            // 移除原导航栏滚动监听代码
+            // window.onscroll = function() { ... };
+            
+            // 保留元素动画代码
+            const animateElements = document.querySelectorAll('.animate__animated');
+            
+            // IntersectionObserver来检测元素是否在视口中
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate__fadeInUp');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            animateElements.forEach(element => {
+                observer.observe(element);
+            });
         };
     </script>
-
-    <script>
-        // Fraud Cases Chart
-        var ctx1 = document.getElementById('fraudCasesChart').getContext('2d');
-        var fraudCasesChart = new Chart(ctx1, {
-            type: 'line',
-            data: {
-                labels: fraudData.years,
-                datasets: [{
-                    label: 'Fraud Cases',
-                    data: fraudData.fraudCases,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { title: { display: true, text: 'Year' }},
-                    y: { title: { display: true, text: 'Cases' }}
-                }
-            }
-        });
-
-        // Age Distribution Chart
-        var ctx2 = document.getElementById('ageDistributionChart').getContext('2d');
-        var ageDistributionChart = new Chart(ctx2, {
-            type: 'pie',
-            data: {
-                labels: ['18-25', '26-35', '36-45', '46-60', '60+'],
-                datasets: [{
-                    data: fraudData.ageDistribution,
-                    backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#6dd1b4']
-                }]
-            },
-            options: {
-                responsive: true,
-            }
-        });
-
-        // Fraud Amount Chart
-        var ctx3 = document.getElementById('fraudAmountChart').getContext('2d');
-        var fraudAmountChart = new Chart(ctx3, {
-            type: 'bar',
-            data: {
-                labels: fraudData.years,
-                datasets: [{
-                    label: 'Fraud Amount (billion USD)',
-                    data: fraudData.fraudAmounts,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { title: { display: true, text: 'Year' }},
-                    y: { title: { display: true, text: 'Amount (billion USD)' }}
-                }
-            }
-        });
-    </script>
-
 </body>
 </html>
+

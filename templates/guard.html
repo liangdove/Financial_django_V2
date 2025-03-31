@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金融异常监控仪表盘</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/extension/bmap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0d6efd; /* Bootstrap primary blue */
+            --secondary-color: #6c757d; /* Bootstrap secondary gray */
+            --light-color: #f8f9fa; /* Bootstrap light gray */
+            --dark-color: #212529; /* Bootstrap dark */
+            --success-color: #198754; /* Bootstrap success green */
+            --warning-color: #ffc107; /* Bootstrap warning yellow */
+            --danger-color: #dc3545; /* Bootstrap danger red */
+            --info-color: #0dcaf0; /* Bootstrap info cyan */
+            --gray-color: #6c757d;
+            --border-color: #dee2e6; /* Bootstrap border color */
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: #979da7; /* Slightly off-white background */
+            color: #495057; /* Default text color */
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1350px auto; /* 需要自己调整 */
+            min-height: 100vh;
+            transition: grid-template-columns 0.3s ease; /* Smooth transition for sidebar collapse */
+            margin-left: 250px; /* 为主内容留出空间 */
+        }
+        .sidebar {
+            position: fixed; /* 固定在页面左侧 */
+            top: 0; /* 距离顶部为0 */
+            left: 0; /* 距离左侧为0 */
+            height: 100vh; /* 高度占满整个视口 */
+            width: 250px; /* 固定宽度 */
+            background-color: var(--dark-color);
+            color: white;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000; /* 确保在其他内容之上 */
+        }
+        .sidebar-header {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem; /* Add space below header */
+        }
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.25rem; /* Slightly larger title */
+            font-weight: 600;
+            white-space: nowrap; /* Prevent wrapping */
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis for overflow */
+        }
+        .sidebar-menu {
+            padding: 0; /* Remove default padding */
+            list-style: none;
+            margin: 0;
+            flex-grow: 1; /* Allow menu to grow */
+        }
+        .sidebar-menu li {
+            padding: 0; /* Remove padding from li */
+            margin-bottom: 0.25rem;
+        }
+        .sidebar-menu li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem; /* Add padding to the link itself */
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .sidebar-menu li a:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.05); /* Subtle hover background */
+        }
+        .sidebar-menu li a i {
+            margin-right: 0.75rem;
+            width: 20px; /* Fixed width for icon alignment */
+            text-align: center;
+            font-size: 1rem; /* Standard icon size */
+        }
+        .sidebar-menu li.active {
+            background-color: rgba(255,255,255,0.1); /* More prominent active background */
+        }
+        .sidebar-menu li.active a {
+            color: white;
+            font-weight: 600;
+        }
+        .main-content {
+            padding: 1.5rem; /* Increased padding */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+            gap: 1.5rem; /* Increased gap */
+            overflow-y: auto; /* Allow content scrolling if needed */
+        }
+        .top-navbar {
+            grid-column: 1 / -1; /* Span full width */
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Softer shadow */
+            padding: 0.75rem 1.5rem; /* Adjusted padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 6px; /* Slightly more rounded corners */
+            margin-bottom: 1.5rem; /* Add margin below navbar */
+        }
+        .top-navbar .nav-title {
+            font-size: 1.2rem; /* Larger title */
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        .top-navbar .nav-tools {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* Add gap between tools */
+        }
+        .top-navbar .nav-tools .date-range {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        /* General Card Styling */
+        .card {
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            border: none; /* Remove default bootstrap border */
+            display: flex;
+            flex-direction: column; /* Allow card content to flex */
+            height: 100%; /* Make cards fill grid cell height */
+        }
+        .card-header { /* Style for card headers if needed */
+            background-color: transparent;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .card-title { /* General card title styling */
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem; /* Consistent margin */
+            color: var(--dark-color);
+        }
+        /* Specific Card Styles */
+        .stat-card { /* Inherits from .card */
+            padding: 1.5rem; /* Ensure padding is consistent */
+        }
+        .stat-card .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Align items to top */
+            margin-bottom: 1rem;
+            border-bottom: none; /* Remove potential bottom border */
+            padding: 0; /* Remove padding from header div */
+        }
+        .stat-card .stat-card-title {
+            font-size: 0.9rem;
+            font-weight: 500; /* Slightly less bold */
+            color: var(--gray-color);
+            margin: 0;
+        }
+        .stat-card .stat-card-icon {
+            width: 48px; /* Slightly larger icon */
+            height: 48px;
+            border-radius: 8px; /* Rounded square */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem; /* Larger icon */
+        }
+        .stat-card .stat-card-value {
+            font-size: 2rem; /* Larger value */
+            font-weight: 700;
+            margin: 0.5rem 0 0.25rem 0; /* Adjust margins */
+            color: var(--dark-color);
+            line-height: 1.2;
+        }
+        .stat-card .stat-card-desc {
+            font-size: 0.85rem; /* Slightly larger desc */
+            color: var(--gray-color);
+            margin: 0;
+        }
+        .chart-card { /* Inherits from .card */
+            padding: 1.5rem;
+        }
+        .chart-card .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem; /* Increased margin */
+            padding: 0; /* Remove padding */
+            border-bottom: none; /* Remove border */
+        }
+        .chart-card .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--dark-color);
+        }
+        .chart-card .chart-tools .btn-group .btn { /* Style button group */
+             padding: 0.3rem 0.6rem;
+             font-size: 0.8rem;
+        }
+        .chart-card .chart-tools .btn-group .btn.active {
+             background-color: var(--primary-color);
+             color: white;
+        }
+        .chart-container {
+            height: 300px; /* Maintain height */
+            position: relative;
+            flex-grow: 1; /* Allow chart to fill space */
+        }
+        .table-card { /* Inherits from .card */
+            grid-column: 1 / -1; /* Span full width */
+            padding: 1.5rem;
+        }
+        .table-card .card-title { /* Style title within table card */
+            margin-bottom: 1.5rem; /* Add space below title */
+        }
+        .table-card .table {
+            margin-bottom: 0;
+            font-size: 0.9rem; /* Slightly larger table font */
+            border-top: 1px solid var(--border-color); /* Add top border */
+        }
+        .table-card .table thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: var(--gray-color);
+            background-color: var(--light-color); /* Light header background */
+            border-top: none;
+            border-bottom-width: 1px; /* Thinner bottom border */
+            padding: 0.75rem 1rem; /* Adjust padding */
+            vertical-align: middle;
+        }
+        .table-card .table tbody td {
+            padding: 0.75rem 1rem; /* Adjust padding */
+            vertical-align: middle;
+            border-top: 1px solid var(--border-color); /* Add horizontal lines */
+        }
+        .table-card .table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.03); /* Subtle hover effect */
+        }
+        .badge {
+            padding: 0.3em 0.6em; /* Adjusted padding */
+            font-weight: 600; /* Bolder badge text */
+            font-size: 0.75rem;
+            border-radius: 4px;
+        }
+        /* Keep specific status badge styles */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-badge.success {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: var(--success-color);
+        }
+        .status-badge.warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        .status-badge.danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        .status-badge i {
+            margin-right: 0.25rem;
+        }
+        .map-card { /* Inherits from .card */
+            grid-column: 1 / -1; /* Span full width */
+            padding: 1.5rem; /* Apply padding directly */
+        }
+        .map-card .card-title { /* Style title within map card */
+             margin-bottom: 1.5rem; /* Add space below title */
+        }
+        .map-container {
+            height: 500px; /* Maintain height */
+            position: relative;
+            border-radius: 4px; /* Add slight rounding to map container */
+            overflow: hidden; /* Hide overflow */
+        }
+        /* Footer Styles */
+        footer {
+            grid-column: 1 / -1; /* 跨越整个页面宽度 */
+            margin-left: 250px; /* 为侧边栏留出空间 */
+            padding: 2rem 1rem;
+            background-color: var(--dark-color);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        footer h5 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+        footer .list-unstyled li {
+            margin-bottom: 0.5rem;
+        }
+        footer .list-unstyled a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        footer .list-unstyled a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        footer .text-center p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 2rem; /* Space above copyright */
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) {
+            .dashboard-container {
+                grid-template-columns: 70px 1fr; /* Slightly wider collapsed sidebar */
+                margin-left: 70px; /* 调整小屏幕下的主内容间距 */
+            }
+            .sidebar-header h3, .sidebar-menu li a span {
+                display: none; /* Hide text */
+            }
+            .sidebar-menu li a {
+                 padding: 0.75rem; /* Adjust padding */
+                 justify-content: center; /* Center icon */
+            }
+            .sidebar-menu li a i {
+                margin-right: 0;
+                font-size: 1.3rem; /* Slightly larger icons when collapsed */
+            }
+            .main-content {
+                grid-template-columns: 1fr; /* Single column layout */
+                padding: 1rem; /* Reduce padding on smaller screens */
+            }
+            .top-navbar {
+                 padding: 0.75rem 1rem; /* Reduce padding */
+                 margin-bottom: 1rem;
+            }
+            .card {
+                 padding: 1rem; /* Reduce card padding */
+            }
+            .stat-card .stat-card-value {
+                 font-size: 1.8rem;
+            }
+             .chart-card .chart-header {
+                 flex-direction: column;
+                 align-items: flex-start;
+                 gap: 0.5rem; /* Add gap when stacked */
+             }
+        }
+         @media (max-width: 767.98px) {
+             .top-navbar {
+                 flex-direction: column;
+                 align-items: flex-start;
+                 gap: 0.5rem;
+             }
+             .top-navbar .nav-tools {
+                 width: 100%;
+                 justify-content: space-between; /* Space out tools */
+             }
+             .table-responsive {
+                 /* Ensure table scrolls horizontally if needed */
+                 overflow-x: auto;
+             }
+         }
+    </style>
+
+    <!-- 新增悬浮对话机器人样式 -->
+    <style>
+        /* 悬浮聊天按钮 */
+        /* 彩色旋风圆球按钮 */
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgb(44, 44, 189) 0%, rgb(124, 48, 181) 50%,  rgb(25, 25, 234) 70%, rgb(173, 110, 173) 100%);
+            border: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 1.0s ease;
+        }
+        .chat-toggle:hover {
+            transform: rotate(360deg);
+        }
+        /* 聊天窗口 */
+        .chat-bot {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 320px;
+            height: 400px;
+            background: white;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+        }
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .chat-header h5 {
+            margin: 0;
+        }
+        .chat-header button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-footer {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+        }
+        .chat-footer input[type="text"] {
+            flex: 1;
+            border: none;
+            padding: 10px;
+        }
+        .chat-footer button {
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>金融异常监控</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="#">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>仪表盘</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#intercepted-transactions">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>统计分析</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#rule_model">
+                        <i class="fas fa-sun"></i>
+                        <span>模型预测</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#fuard_class">
+                        <i class="fas fa-eye"></i>
+                        <span>类型识别</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#fraud-map">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>地图展示</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'index' %}">
+                        <i class="fas fa-home"></i>
+                        <span>返回主页</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="top-navbar">
+                <div class="nav-title">金融异常监控仪表盘</div>
+                <div class="nav-tools">
+                    <div class="date-range">2025年3月31日</div>
+                    <button class="btn btn-primary btn-sm">刷新</button>
+                </div>
+            </div>
+            <!-- Combined Stat Card (now placed alongside charts) -->
+            <div id="intercepted-transactions" class="card combined-stat-card">
+                <!-- Section 1: 今日拦截异常交易 -->
+                <div class="stat-section">
+                    <div class="stat-card-header">
+                        <div>
+                            <h5 class="stat-card-title">今日拦截异常交易</h5>
+                            <div class="stat-card-value">1,234</div>
+                            <div class="stat-card-desc">笔</div>
+                        </div>
+                        <div class="stat-card-icon bg-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-3">
+                <div class="stat-section">
+                    <div class="stat-card-header">
+                        <div>
+                            <h5 class="stat-card-title">本月保护用户资产</h5>
+                            <div class="stat-card-value">¥98,765,432</div>
+                            <div class="stat-card-desc">元</div>
+                        </div>
+                        <div class="stat-card-icon bg-success">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-card card">
+                <div class="chart-header">
+                    <h5 class="chart-title">近期诈骗类型分布</h5>
+                    <div class="chart-tools">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Timeframe">
+                            <button type="button" class="btn btn-outline-secondary">周</button>
+                            <button type="button" class="btn btn-outline-secondary active">月</button>
+                            <button type="button" class="btn btn-outline-secondary">年</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="fraudTypeChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card card">
+                <div class="chart-header">
+                    <h5 class="chart-title">月度诈骗金额趋势</h5>
+                    <div class="chart-tools">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Data type">
+                            <button type="button" class="btn btn-outline-secondary">案件数</button>
+                            <button type="button" class="btn btn-outline-secondary active">挽回损失</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="fraudTrendChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card card">
+                <div class="card-header">
+                    <h5>快速查询</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="idInput" class="form-label">请输入6位ID号</label>
+                        <input type="text" id="idInput" class="form-control" placeholder="例如：123456">
+                    </div>
+                    <button class="btn btn-primary" onclick="checkID()">查询</button>
+                    <div id="idResult" class="mt-3"></div>
+                </div>
+            </div>
+            <div id="rule_model" class="table-card card">
+                <div class="card-header">
+                    <h5>风险评分模型</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="transactionAmount" class="form-label">交易金额 (元)</label>
+                            <input type="number" id="transactionAmount" class="form-control" placeholder="例如：50000">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="transactionFrequency" class="form-label">交易频率 (次/天)</label>
+                            <input type="number" id="transactionFrequency" class="form-control" placeholder="例如：10">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="accountAge" class="form-label">账户年龄 (月)</label>
+                            <input type="number" id="accountAge" class="form-control" placeholder="例如：24">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="locationRisk" class="form-label">地区风险等级 (1-5)</label>
+                            <input type="number" id="locationRisk" class="form-control" placeholder="例如：3">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateRiskScore()">计算风险评分</button>
+                    <div id="riskScoreResult" class="mt-3"></div>
+                </div>
+            </div>
+            <div id="fuard_class" class="table-card card">
+                <h5 class="card-title">常见诈骗类型识别</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>诈骗类型</th>
+                                <th>特征表现</th>
+                                <th>防范措施</th>
+                                <th>危险等级</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>投资理财诈骗</td>
+                                <td>承诺高回报，要求先交费用</td>
+                                <td>核实平台资质，不轻信高收益</td>
+                                <td><span class="badge bg-danger">高危</span></td>
+                            </tr>
+                            <tr>
+                                <td>冒充客服诈骗</td>
+                                <td>自称平台客服，要求操作转账</td>
+                                <td>通过官方渠道联系客服确认</td>
+                                <td><span class="badge bg-danger">高危</span></td>
+                            </tr>
+                            <tr>
+                                <td>网购退款诈骗</td>
+                                <td>谎称商品问题需要退款</td>
+                                <td>主动联系官方客服处理</td>
+                                <td><span class="badge bg-warning">中危</span></td>
+                            </tr>
+                            <tr>
+                                <td>冒充公检法诈骗</td>
+                                <td>谎称涉案，要求转账核实</td>
+                                <td>主动联系官方电话确认</td>
+                                <td><span class="badge bg-danger">高危</span></td>
+                            </tr>
+                            <tr>
+                                <td>刷单诈骗</td>
+                                <td>承诺高佣金，要求先付款</td>
+                                <td>拒绝任何垫付资金的要求</td>
+                                <td><span class="badge bg-warning">中危</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="map-card card">
+                <div id="fraud-map">                
+                    <h5 class="card-title">实时诈骗地图</h5>
+                    <div id="fraudMap" class="map-container"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>金融安全卫士</h5>
+                    <p>守护您的财产安全，提供专业金融防诈骗知识</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">关于我们</a></li>
+                        <li><a href="#" class="text-white">安全资讯</a></li>
+                        <li><a href="#" class="text-white">举报通道</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>联系我们</h5>
+                    <ul class="list-unstyled">
+                        <li>客服热线：400-888-8888</li>
+                        <li>举报电话：110</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p>&copy; 2025 金融安全卫士 版权所有</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- 新增悬浮对话机器人HTML -->
+    <div id="chatBot" class="chat-bot">
+        <div class="chat-header">
+            <h5>Bot</h5>
+            <button id="chatCloseBtn">&times;</button>
+        </div>
+        <div class="chat-body">
+            <div id="chatMessages"></div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="输入您的问题...">
+            <button id="chatSendBtn">发送</button>
+        </div>
+    </div>
+    <button id="chatToggleBtn" class="chat-toggle"></button>
+
+    <!-- 新增悬浮对话机器人逻辑 -->
+    <script>
+        // 切换聊天窗口显示
+        document.getElementById('chatToggleBtn').addEventListener('click', function() {
+            document.getElementById('chatBot').style.display = 'flex';
+            this.style.display = 'none';
+        });
+        document.getElementById('chatCloseBtn').addEventListener('click', function() {
+            document.getElementById('chatBot').style.display = 'none';
+            document.getElementById('chatToggleBtn').style.display = 'block';
+        });
+
+        // 发送消息事件绑定
+        document.getElementById('chatSendBtn').addEventListener('click', sendChatMessage);
+        document.getElementById('chatInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+
+        function sendChatMessage() {
+            var chatInput = document.getElementById('chatInput');
+            var message = chatInput.value.trim();
+            if (!message) return;
+            
+            appendMessage('user', message);
+            chatInput.value = '';
+            
+            // 调用后端 API（调用 ollama 接口）获取回复
+            fetch('/Guard/chat/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.reply) {
+                    appendMessage('bot', data.reply);
+                } else {
+                    appendMessage('bot', '抱歉，未收到回复。');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                appendMessage('bot', '请求失败，请稍后重试。');
+            });
+        }
+
+        function appendMessage(sender, text) {
+            var chatMessages = document.getElementById('chatMessages');
+            var msgDiv = document.createElement('div');
+            msgDiv.style.margin = '8px 0';
+            msgDiv.style.padding = '8px';
+            msgDiv.style.borderRadius = '4px';
+            if (sender === 'user') {
+                msgDiv.style.backgroundColor = '#e1f5fe';
+                msgDiv.style.alignSelf = 'flex-end';
+            } else {
+                msgDiv.style.backgroundColor = '#f1f1f1';
+                msgDiv.style.alignSelf = 'flex-start';
+            }
+            msgDiv.textContent = text;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+
+    <!-- 规则引擎和风险评分计算逻辑 -->
+    <script>
+        function calculateRiskScore() {
+            const amount = parseFloat(document.getElementById('transactionAmount').value) || 0;
+            const frequency = parseFloat(document.getElementById('transactionFrequency').value) || 0;
+            const accountAge = parseFloat(document.getElementById('accountAge').value) || 0;
+            const locationRisk = parseFloat(document.getElementById('locationRisk').value) || 0;
+
+            if (amount <= 0 || frequency <= 0 || accountAge <= 0 || locationRisk <= 0) {
+                document.getElementById('riskScoreResult').innerHTML = '<div class="alert alert-warning">请输入所有有效数据</div>';
+                return;
+            }
+
+            // 简单风险评分公式：权重加权求和
+            const riskScore = (amount * 0.4) + (frequency * 0.3) + ((6 - accountAge / 12) * 0.2) + (locationRisk * 0.1);
+
+            let riskLevel, riskClass;
+            if (riskScore > 80) {
+                riskLevel = "高风险";
+                riskClass = "danger";
+            } else if (riskScore > 50) {
+                riskLevel = "中等风险";
+                riskClass = "warning";
+            } else {
+                riskLevel = "低风险";
+                riskClass = "success";
+            }
+
+            document.getElementById('riskScoreResult').innerHTML = `
+                <div class="alert alert-${riskClass}">
+                    <h5>${riskLevel}</h5>
+                    <p>风险评分：${riskScore.toFixed(2)}</p>
+                </div>
+            `;
+        }
+    </script>
+
+    <script>
+        function checkID() {
+            const idInput = document.getElementById('idInput');
+            const idResult = document.getElementById('idResult');
+            if (!idInput || !idResult) return;
+        
+            const id = idInput.value.trim();
+            if (!/^\d{6}$/.test(id)) {
+                idResult.innerHTML = '<div class="alert alert-warning mt-2">请输入有效的6位数字ID号</div>';
+                return;
+            }
+        
+            // 简单规则引擎：假设ID以特定数字开头或满足某些条件时为高风险
+            const isRisk = id.startsWith('9') || parseInt(id) % 7 === 0;
+        
+            idResult.innerHTML = `
+                <div class="alert alert-${isRisk ? 'danger' : 'success'} mt-2">
+                    <h5>${isRisk ? '<i class="fas fa-exclamation-triangle"></i> 高风险' : '<i class="fas fa-check-circle"></i> 安全'}</h5>
+                    <p>${isRisk ? '该ID号存在潜在风险，请进一步核实。' : '该ID号未发现异常。'}</p>
+                </div>
+            `;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeCtx = document.getElementById('fraudTypeChart').getContext('2d');
+            const typeChart = new Chart(typeCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['投资理财诈骗', '冒充客服诈骗', '网购退款诈骗', '冒充公检法诈骗', '刷单诈骗', '其他'],
+                    datasets: [{
+                        data: [35, 20, 15, 18, 10, 2],
+                        backgroundColor: [
+                            '#dc3545', '#fd7e14', '#ffc107', 
+                            '#20c997', '#0d6efd', '#6c757d'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: '诈骗类型占比(%)',
+                            padding: {
+                                bottom: 10
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(0,0,0,0.8)',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+
+            const trendCtx = document.getElementById('fraudTrendChart').getContext('2d');
+            const trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [{
+                        label: '诈骗案件数(起)',
+                        data: [120, 135, 180, 170, 190, 165],
+                        borderColor: 'var(--primary-color)',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: 'var(--primary-color)',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }, {
+                        label: '挽回损失(万元)',
+                        data: [85, 95, 120, 110, 130, 115],
+                        borderColor: 'var(--success-color)',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: 'var(--success-color)',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '近半年诈骗趋势',
+                            padding: {
+                                bottom: 10
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(0,0,0,0.8)',
+                            borderWidth: 1
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)',
+                                borderDash: [2, 3]
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const mapChart = echarts.init(document.getElementById('fraudMap'));
+            
+            const mapData = [
+                {name: '北京市', value: 85},
+                {name: '天津市', value: 65},
+                {name: '上海市', value: 95},
+                {name: '重庆市', value: 75},
+                {name: '河北省', value: 45},
+                {name: '河南省', value: 55},
+                {name: '云南省', value: 35},
+                {name: '辽宁省', value: 40},
+                {name: '黑龙江省', value: 30},
+                {name: '湖南省', value: 50},
+                {name: '安徽省', value: 40},
+                {name: '山东省', value: 60},
+                {name: '新疆维吾尔自治区', value: 25},
+                {name: '江苏省', value: 70},
+                {name: '浙江省', value: 80},
+                {name: '江西省', value: 45},
+                {name: '湖北省', value: 55},
+                {name: '广西壮族自治区', value: 40},
+                {name: '甘肃省', value: 30},
+                {name: '山西省', value: 35},
+                {name: '内蒙古自治区', value: 25},
+                {name: '陕西省', value: 40},
+                {name: '吉林省', value: 35},
+                {name: '福建省', value: 50},
+                {name: '贵州省', value: 30},
+                {name: '广东省', value: 90},
+                {name: '青海省', value: 20},
+                {name: '西藏自治区', value: 15},
+                {name: '四川省', value: 65},
+                {name: '宁夏回族自治区', value: 25},
+                {name: '海南省', value: 30},
+                {name: '台湾省', value: 45},
+                {name: '香港特别行政区', value: 55},
+                {name: '澳门特别行政区', value: 20}
+            ];
+
+            const mapOption = {
+                title: {
+                    text: '全国诈骗案件分布',
+                    left: 'center',
+                    textStyle: {
+                         color: '#333',
+                         fontSize: 16,
+                         fontWeight: 600
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        const dataItem = params.data;
+                        const value = dataItem ? dataItem.value : 0;
+                        const name = params.name || (dataItem ? dataItem.name : '未知区域');
+                        return name + '：' + (value || 0) + '起案件';
+                    },
+                     backgroundColor: 'rgba(0,0,0,0.7)',
+                     borderColor: '#333',
+                     textStyle: {
+                         color: '#fff'
+                     }
+                },
+                visualMap: {
+                    min: 0,
+                    max: 100,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['高', '低'],
+                    calculable: true,
+                    inRange: {
+                        color: ['#ccebff', '#007bff']
+                    },
+                    textStyle: {
+                         color: '#333'
+                    }
+                },
+                series: [{
+                    name: '诈骗案件',
+                    type: 'map',
+                    map: 'china',
+                    roam: true,
+                    itemStyle: {
+                        areaColor: '#f0f2f5',
+                        borderColor: '#fff',
+                        borderWidth: 0.5
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            color: '#333'
+                        },
+                        itemStyle: {
+                            areaColor: '#a8d5ff',
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(0, 0, 0, 0.2)'
+                        }
+                    },
+                    select: {
+                         label: {
+                             show: true,
+                             color: '#fff'
+                         },
+                         itemStyle: {
+                             areaColor: '#0056b3'
+                         }
+                    },
+                    data: mapData,
+                    label: {
+                        show: false,
+                        color: '#333'
+                    }
+                }]
+            };
+
+            fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+                .then(response => response.json())
+                .then(geoJson => {
+                    echarts.registerMap('china', geoJson);
+                    mapChart.setOption(mapOption);
+                })
+                .catch(error => {
+                    console.error('加载地图数据失败:', error);
+                    const mapElement = document.getElementById('fraudMap');
+                    if (mapElement) {
+                       mapElement.innerHTML =
+                           '<div class="alert alert-danger m-3">地图数据加载失败，请刷新重试或检查网络连接。</div>';
+                    }
+                });
+
+            window.addEventListener('resize', function() {
+                if (this.resizeTimeout) {
+                    clearTimeout(this.resizeTimeout);
+                }
+                this.resizeTimeout = setTimeout(() => {
+                     typeChart.resize();
+                     trendChart.resize();
+                     mapChart.resize();
+                }, 200);
+            });
+
+            const counterElements = document.querySelectorAll('.stat-card-value');
+            counterElements.forEach(counter => {
+                 const textContent = counter.textContent || '';
+                 const match = textContent.match(/[¥]?([\d,]+)/);
+                 if (!match || !match[1]) return;
+
+                 const target = parseFloat(match[1].replace(/,/g, ''));
+                 const prefix = textContent.includes('¥') ? '¥' : '';
+                 let count = 0;
+                 const duration = 1500;
+                 const frameDuration = 1000 / 60;
+                 const totalFrames = Math.round(duration / frameDuration);
+                 const increment = target / totalFrames;
+
+                 function updateCount() {
+                     count += increment;
+                     if (count < target) {
+                         counter.textContent = prefix + Math.floor(count).toLocaleString('en-US');
+                         requestAnimationFrame(updateCount);
+                     } else {
+                         counter.textContent = prefix + target.toLocaleString('en-US');
+                     }
+                 }
+
+                 if (!isNaN(target) && target > 0) {
+                      requestAnimationFrame(updateCount);
+                 } else {
+                      counter.textContent = prefix + target.toLocaleString('en-US');
+                 }
+            });
+        });
+        
+        function checkRisk() {
+            const amountInput = document.getElementById('amountInput');
+            const riskResult = document.getElementById('riskResult');
+            if (!amountInput || !riskResult) return;
+
+            const amount = parseFloat(amountInput.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                riskResult.innerHTML = '<div class="alert alert-warning mt-2">请输入有效的金额</div>';
+                return;
+            }
+            
+            let riskLevel, riskMessage, riskClass;
+            
+            if (amount > 50000) {
+                riskLevel = "高风险";
+                riskMessage = "大额交易请务必确认对方身份，建议通过官方渠道核实";
+                riskClass = "danger";
+            } else if (amount > 10000) {
+                riskLevel = "中等风险";
+                riskMessage = "请确认交易目的，谨慎验证对方信息";
+                riskClass = "warning";
+            } else {
+                riskLevel = "低风险";
+                riskMessage = "风险较低，但仍需注意交易安全";
+                riskClass = "success";
+            }
+            
+            riskResult.innerHTML = `
+                <div class="alert alert-${riskClass} alert-dismissible fade show mt-2" role="alert">
+                    <h5 class="alert-heading">${riskLevel}</h5>
+                    <p>${riskMessage}</p>
+                    <hr>
+                    <p class="mb-0">
+                        <button class="btn btn-sm btn-outline-${riskClass}" onclick="showRiskDetail()">查看详情</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </p>
+                </div>
+            `;
+        }
+        
+        function showRiskDetail() {
+            alert('风险详情：\n1. 陌生账户转账风险\n2. 非官方渠道交易风险\n3. 大额资金安全建议');
+        }
+        
+        function scanPhone() {
+            const phoneInput = document.getElementById('phoneScan');
+            const result = document.getElementById('scanResult');
+            if (!phoneInput || !result) return;
+
+            const phone = phoneInput.value;
+            if (!phone || !/^\d+$/.test(phone)) {
+                result.innerHTML = '<div class="alert alert-warning mt-2">请输入有效的电话号码</div>';
+                return;
+            }
+
+            const isRisk = Math.random() > 0.7;
+            result.innerHTML = `
+                <div class="alert alert-${isRisk ? 'danger' : 'success'} mt-2">
+                    <h5>${isRisk ? '<i class="fas fa-exclamation-triangle"></i> 高风险' : '<i class="fas fa-check-circle"></i> 安全'}</h5>
+                    <p>${isRisk ? '该号码已被标记为可疑号码，请谨慎对待。' : '该号码未发现异常记录。'}</p>
+                </div>
+            `;
+        }
+
+        function scanURL() {
+            const urlInput = document.getElementById('urlScan');
+            const result = document.getElementById('scanResult');
+            if (!urlInput || !result) return;
+
+            const url = urlInput.value;
+            if (!url || !url.includes('.')) {
+                result.innerHTML = '<div class="alert alert-warning mt-2">请输入有效的网址</div>';
+                return;
+            }
+
+            const isRisk = Math.random() > 0.7;
+            result.innerHTML = `
+                <div class="alert alert-${isRisk ? 'danger' : 'success'} mt-2">
+                     <h5>${isRisk ? '<i class="fas fa-exclamation-triangle"></i> 高风险' : '<i class="fas fa-check-circle"></i> 安全'}</h5>
+                    <p>${isRisk ? '该网址可能存在安全风险，建议谨慎访问。' : '该网址未发现异常。'}</p>
+                </div>
+            `;
+        }
+
+        function scanAccount() {
+            const accountInput = document.getElementById('accountScan');
+            const result = document.getElementById('scanResult');
+            if (!accountInput || !result) return;
+
+            const account = accountInput.value;
+            if (!account || !/^\d+$/.test(account)) {
+                result.innerHTML = '<div class="alert alert-warning mt-2">请输入有效的银行账号</div>';
+                return;
+            }
+
+            const isRisk = Math.random() > 0.7;
+            result.innerHTML = `
+                <div class="alert alert-${isRisk ? 'danger' : 'success'} mt-2">
+                     <h5>${isRisk ? '<i class="fas fa-exclamation-triangle"></i> 高风险' : '<i class="fas fa-check-circle"></i> 安全'}</h5>
+                    <p>${isRisk ? '该账号存在异常交易记录，请谨慎对待。' : '该账号未发现异常。'}</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
