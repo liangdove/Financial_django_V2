@@ -1,0 +1,373 @@
+:root {
+    --primary-color: #0d6efd; /* Bootstrap primary blue */
+    --secondary-color: #6c757d; /* Bootstrap secondary gray */
+    --light-color: #f8f9fa; /* Bootstrap light gray */
+    --dark-color: #212529; /* Bootstrap dark */
+    --success-color: #198754; /* Bootstrap success green */
+    --warning-color: #ffc107; /* Bootstrap warning yellow */
+    --danger-color: #dc3545; /* Bootstrap danger red */
+    --info-color: #0dcaf0; /* Bootstrap info cyan */
+    --gray-color: #6c757d;
+    --border-color: #dee2e6; /* Bootstrap border color */
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    background-color: #979da7; /* Slightly off-white background */
+    color: #495057; /* Default text color */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 1350px auto; /* 需要自己调整 */
+    min-height: 100vh;
+    transition: grid-template-columns 0.3s ease; /* Smooth transition for sidebar collapse */
+    margin-left: 250px; /* 为主内容留出空间 */
+}
+.sidebar {
+    position: fixed; /* 固定在页面左侧 */
+    top: 0; /* 距离顶部为0 */
+    left: 0; /* 距离左侧为0 */
+    height: 100vh; /* 高度占满整个视口 */
+    width: 250px; /* 固定宽度 */
+    background-color: var(--dark-color);
+    color: white;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000; /* 确保在其他内容之上 */
+}
+.sidebar-header {
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1rem; /* Add space below header */
+}
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 1.25rem; /* Slightly larger title */
+    font-weight: 600;
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis for overflow */
+}
+.sidebar-menu {
+    padding: 0; /* Remove default padding */
+    list-style: none;
+    margin: 0;
+    flex-grow: 1; /* Allow menu to grow */
+}
+.sidebar-menu li {
+    padding: 0; /* Remove padding from li */
+    margin-bottom: 0.25rem;
+}
+.sidebar-menu li a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem; /* Add padding to the link itself */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.sidebar-menu li a:hover {
+    color: white;
+    background-color: rgba(255,255,255,0.05); /* Subtle hover background */
+}
+.sidebar-menu li a i {
+    margin-right: 0.75rem;
+    width: 20px; /* Fixed width for icon alignment */
+    text-align: center;
+    font-size: 1rem; /* Standard icon size */
+}
+.sidebar-menu li.active {
+    background-color: rgba(255,255,255,0.1); /* More prominent active background */
+}
+.sidebar-menu li.active a {
+    color: white;
+    font-weight: 600;
+}
+.main-content {
+    padding: 1.5rem; /* Increased padding */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 1.5rem; /* Increased gap */
+    overflow-y: auto; /* Allow content scrolling if needed */
+}
+.top-navbar {
+    grid-column: 1 / -1; /* Span full width */
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Softer shadow */
+    padding: 0.75rem 1.5rem; /* Adjusted padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 6px; /* Slightly more rounded corners */
+    margin-bottom: 1.5rem; /* Add margin below navbar */
+}
+.top-navbar .nav-title {
+    font-size: 1.2rem; /* Larger title */
+    font-weight: 600;
+    color: var(--dark-color);
+}
+.top-navbar .nav-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Add gap between tools */
+}
+.top-navbar .nav-tools .date-range {
+    font-size: 0.9rem;
+    color: var(--gray-color);
+}
+/* General Card Styling */
+.card {
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    border: none; /* Remove default bootstrap border */
+    display: flex;
+    flex-direction: column; /* Allow card content to flex */
+    height: 100%; /* Make cards fill grid cell height */
+}
+.card-header { /* Style for card headers if needed */
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+}
+.card-title { /* General card title styling */
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem; /* Consistent margin */
+    color: var(--dark-color);
+}
+/* Specific Card Styles */
+.stat-card { /* Inherits from .card */
+    padding: 1.5rem; /* Ensure padding is consistent */
+}
+.stat-card .stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to top */
+    margin-bottom: 1rem;
+    border-bottom: none; /* Remove potential bottom border */
+    padding: 0; /* Remove padding from header div */
+}
+.stat-card .stat-card-title {
+    font-size: 0.9rem;
+    font-weight: 500; /* Slightly less bold */
+    color: var(--gray-color);
+    margin: 0;
+}
+.stat-card .stat-card-icon {
+    width: 48px; /* Slightly larger icon */
+    height: 48px;
+    border-radius: 8px; /* Rounded square */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem; /* Larger icon */
+}
+.stat-card .stat-card-value {
+    font-size: 2rem; /* Larger value */
+    font-weight: 700;
+    margin: 0.5rem 0 0.25rem 0; /* Adjust margins */
+    color: var(--dark-color);
+    line-height: 1.2;
+}
+.stat-card .stat-card-desc {
+    font-size: 0.85rem; /* Slightly larger desc */
+    color: var(--gray-color);
+    margin: 0;
+}
+.chart-card { /* Inherits from .card */
+    padding: 1.5rem;
+}
+.chart-card .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem; /* Increased margin */
+    padding: 0; /* Remove padding */
+    border-bottom: none; /* Remove border */
+}
+.chart-card .chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--dark-color);
+}
+.chart-card .chart-tools .btn-group .btn { /* Style button group */
+     padding: 0.3rem 0.6rem;
+     font-size: 0.8rem;
+}
+.chart-card .chart-tools .btn-group .btn.active {
+     background-color: var(--primary-color);
+     color: white;
+}
+.chart-container {
+    height: 300px; /* Maintain height */
+    position: relative;
+    flex-grow: 1; /* Allow chart to fill space */
+}
+.table-card { /* Inherits from .card */
+    grid-column: 1 / -1; /* Span full width */
+    padding: 1.5rem;
+}
+.table-card .card-title { /* Style title within table card */
+    margin-bottom: 1.5rem; /* Add space below title */
+}
+.table-card .table {
+    margin-bottom: 0;
+    font-size: 0.9rem; /* Slightly larger table font */
+    border-top: 1px solid var(--border-color); /* Add top border */
+}
+.table-card .table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--gray-color);
+    background-color: var(--light-color); /* Light header background */
+    border-top: none;
+    border-bottom-width: 1px; /* Thinner bottom border */
+    padding: 0.75rem 1rem; /* Adjust padding */
+    vertical-align: middle;
+}
+.table-card .table tbody td {
+    padding: 0.75rem 1rem; /* Adjust padding */
+    vertical-align: middle;
+    border-top: 1px solid var(--border-color); /* Add horizontal lines */
+}
+.table-card .table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03); /* Subtle hover effect */
+}
+.badge {
+    padding: 0.3em 0.6em; /* Adjusted padding */
+    font-weight: 600; /* Bolder badge text */
+    font-size: 0.75rem;
+    border-radius: 4px;
+}
+/* Keep specific status badge styles */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.status-badge.success {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: var(--success-color);
+}
+.status-badge.warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: var(--warning-color);
+}
+.status-badge.danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger-color);
+}
+.status-badge i {
+    margin-right: 0.25rem;
+}
+.map-card { /* Inherits from .card */
+    grid-column: 1 / -1; /* Span full width */
+    padding: 1.5rem; /* Apply padding directly */
+}
+.map-card .card-title { /* Style title within map card */
+     margin-bottom: 1.5rem; /* Add space below title */
+}
+.map-container {
+    height: 500px; /* Maintain height */
+    position: relative;
+    border-radius: 4px; /* Add slight rounding to map container */
+    overflow: hidden; /* Hide overflow */
+}
+/* Footer Styles */
+footer {
+    grid-column: 1 / -1; /* 跨越整个页面宽度 */
+    margin-left: 250px; /* 为侧边栏留出空间 */
+    padding: 2rem 1rem;
+    background-color: var(--dark-color);
+    color: rgba(255, 255, 255, 0.7);
+}
+footer h5 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+footer p {
+    margin-bottom: 0.5rem;
+}
+footer .list-unstyled li {
+    margin-bottom: 0.5rem;
+}
+footer .list-unstyled a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+footer .list-unstyled a:hover {
+    color: white;
+    text-decoration: underline;
+}
+footer .text-center p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    margin-top: 2rem; /* Space above copyright */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .dashboard-container {
+        grid-template-columns: 70px 1fr; /* Slightly wider collapsed sidebar */
+        margin-left: 70px; /* 调整小屏幕下的主内容间距 */
+    }
+    .sidebar-header h3, .sidebar-menu li a span {
+        display: none; /* Hide text */
+    }
+    .sidebar-menu li a {
+         padding: 0.75rem; /* Adjust padding */
+         justify-content: center; /* Center icon */
+    }
+    .sidebar-menu li a i {
+        margin-right: 0;
+        font-size: 1.3rem; /* Slightly larger icons when collapsed */
+    }
+    .main-content {
+        grid-template-columns: 1fr; /* Single column layout */
+        padding: 1rem; /* Reduce padding on smaller screens */
+    }
+    .top-navbar {
+         padding: 0.75rem 1rem; /* Reduce padding */
+         margin-bottom: 1rem;
+    }
+    .card {
+         padding: 1rem; /* Reduce card padding */
+    }
+    .stat-card .stat-card-value {
+         font-size: 1.8rem;
+    }
+     .chart-card .chart-header {
+         flex-direction: column;
+         align-items: flex-start;
+         gap: 0.5rem; /* Add gap when stacked */
+     }
+}
+ @media (max-width: 767.98px) {
+     .top-navbar {
+         flex-direction: column;
+         align-items: flex-start;
+         gap: 0.5rem;
+     }
+     .top-navbar .nav-tools {
+         width: 100%;
+         justify-content: space-between; /* Space out tools */
+     }
+     .table-responsive {
+         /* Ensure table scrolls horizontally if needed */
+         overflow-x: auto;
+     }
+}

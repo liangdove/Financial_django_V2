@@ -1,0 +1,64 @@
+<!-- HTML内容 -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>金融欺诈案例数量</h2>
+            <canvas id="fraudCasesChart"></canvas>
+            <small style="color: gray; font-size: 0.5em;">来源：北京金融信息化研究所 </small>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+            <p style="font-size: 1.4em;">
+                从2015年到2023年，金融欺诈案件的数量呈现出显著增长。2015年记录了500起案件，而2023年则达到了2800起，显示出欺诈活动的日益猖獗，特别是在2019年之后增长尤为明显。
+            </p>
+            
+        </div>
+    </div>
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-md-6 d-flex align-items-center">
+            <p style="font-size: 1.4em;">各年龄段的受害者分布中，26-35岁年龄段占比最高，达到35%，其次是18-25岁和36-45岁的受害者，分别为25%和20%。46岁以上的人群占比较低，显示出年轻人群体更易成为金融欺诈的目标。</p>
+        </div>
+        <div class="col-md-6">
+            <h2>受害者年龄分布</h2>
+            <canvas id="ageDistributionChart"></canvas>
+            <small style="color: gray; font-size: 0.5em;">来源：北京金融信息化研究所 </small>
+        </div>
+    </div>
+    <hr class="my-4">
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h2>金融欺诈逐年损失 (百万美元)</h2>
+            <canvas id="fraudAmountChart"></canvas>
+            <small style="color: gray; font-size: 0.5em;">来源：北京金融信息化研究所 </small>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+            <p style="font-size: 1.4em;">金融欺诈导致的经济损失逐年上升。2015年损失约为1.5亿美元，而2023年这一数字飙升至8.4亿美元，反映出金融欺诈的规模和影响力在过去几年间急剧增加。</p>
+        </div>
+    </div>
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-md-6 d-flex align-items-center">
+            <ul style="font-size: 1.4em; list-style: none; padding-left: 0;">
+                <ul>
+                    <li> 类别极度不平衡，导致样本价值敏感度不同。由于互联网用户基数更大，欺诈率从传统银行约2%降低至万分之一甚至更低，因此识别欺诈案例的难度又上了一个台阶。</li>
+                    <li> 对抗攻击，导致出现分布外的样本。欺诈者可能通过改变以往行为、模仿正常用户等方式，来试图躲过反欺诈模型的"法眼"。欺诈手段的飞速变化也让我们头疼不已。</li>
+                    <li> 标注稀缺，导致特征学习的指导信号弱。互联网金融产品很多都是创新产品，出现时间较短，标注的数据也不多，如何在新场景中检测欺诈变成了新的难题。</li>
+                </ul>
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h2>现状与挑战挑战</h2>
+            <img src="{% static 'images/now_problem.png' %}" alt="now_problem" class="img-fluid">
+        </div>
+    </div>
+    <hr class="my-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>防范金融欺诈技术体系结构</h2>
+            <img src="{% static 'images/2.png' %}" alt="防范金融欺诈技术体系结构" class="img-fluid">
+        </div>
+        <div class="col-md-12">
+            <p style="font-size: 1.4em;">面对不断增加的金融安全漏洞与用户欺诈风险，我们有必要积极研发和投入技术进行有效风险防控。该图是金融智能风控系统的体系结构，有望准确快速有效地进行各业务环节的风险识别、风险评估、风险预警和风险处理。同时，借助机器学习、跨平台数据引入、图网络技术与大数据分析等科技创新，确保了反欺诈的准确性、缜密性和实时性。</p>
+        </div>
+    </div>
+</div>

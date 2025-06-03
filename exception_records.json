@@ -1,0 +1,240 @@
+[
+    {
+        "time": "2025/4/1 22:46:12",
+        "amount": 70240,
+        "count": 60,
+        "transaction_id": "625046",
+        "transaction_type": "充值"
+    },
+    {
+        "time": "2025/4/1 22:46:30",
+        "amount": 70729,
+        "count": 40,
+        "transaction_id": "296799",
+        "transaction_type": "充值"
+    },
+    {
+        "time": "2025/4/1 22:47:39",
+        "amount": 72521,
+        "count": 30,
+        "transaction_id": "105555",
+        "transaction_type": "代金券"
+    },
+    {
+        "time": "2025/4/1 22:48:27",
+        "amount": 45439,
+        "count": 69,
+        "transaction_id": "160635",
+        "transaction_type": "企业付款"
+    },
+    {
+        "time": "2025/4/1 22:48:49",
+        "amount": 12024,
+        "count": 69,
+        "transaction_id": "793444",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025/4/1 22:49:48",
+        "amount": 60120,
+        "count": 69,
+        "transaction_id": "388916",
+        "transaction_type": "企业付款"
+    },
+    {
+        "time": "2025/4/1 22:49:52",
+        "amount": 70358,
+        "count": 30,
+        "transaction_id": "986034",
+        "transaction_type": "充值"
+    },
+    {
+        "time": "2025/4/1 22:50:12",
+        "amount": 42012,
+        "count": 69,
+        "transaction_id": "831710",
+        "transaction_type": "交易"
+    },
+    {
+        "time": "2025/4/1 22:51:03",
+        "amount": 40047,
+        "count": 69,
+        "transaction_id": "542191",
+        "transaction_type": "充值"
+    },
+    {
+        "time": "2025/4/1 22:51:17",
+        "amount": 73292,
+        "count": 68,
+        "transaction_id": "846737",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025/4/1 22:51:21",
+        "amount": 63646,
+        "count": 69,
+        "transaction_id": "456120",
+        "transaction_type": "分账"
+    },
+    {
+        "time": "2025/4/1 22:52:20",
+        "amount": 71507,
+        "count": 65,
+        "transaction_id": "925210",
+        "transaction_type": "代金券"
+    },
+    {
+        "time": "2025/4/1 22:52:32",
+        "amount": 28209,
+        "count": 69,
+        "transaction_id": "201615",
+        "transaction_type": "企业付款"
+    },
+    {
+        "time": "2025/4/1 22:53:34",
+        "amount": 71225,
+        "count": 0,
+        "transaction_id": "271161",
+        "transaction_type": "分账"
+    },
+    {
+        "time": "2025/4/1 22:54:09",
+        "amount": 32466,
+        "count": 69,
+        "transaction_id": "138720",
+        "transaction_type": "分账"
+    },
+    {
+        "time": "2025/5/18 20:33:57",
+        "amount": 60421,
+        "count": 67,
+        "transaction_id": "990918",
+        "transaction_type": "交易"
+    },
+    {
+        "time": "2025/5/18 20:34:05",
+        "amount": 57929,
+        "count": 69,
+        "transaction_id": "306240",
+        "transaction_type": "分账"
+    },
+    {
+        "time": "2025/6/3 16:02:58",
+        "amount": 73156,
+        "count": 25,
+        "transaction_id": "959215",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025/6/3 16:03:26",
+        "amount": 71828,
+        "count": 24,
+        "transaction_id": "179409",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025-6-3 16:03:57",
+        "amount": 72440,
+        "count": 3,
+        "transaction_id": "786377",
+        "transaction_type": "企业付款"
+    },
+    {
+        "time": "2025/6/3 16:04:00",
+        "amount": 72458,
+        "count": 50,
+        "transaction_id": "816877",
+        "transaction_type": "代金券"
+    },
+    {
+        "time": "2025-6-3 16:04:23",
+        "amount": 72596,
+        "count": 20,
+        "transaction_id": "748514",
+        "transaction_type": "企业付款"
+    },
+    {
+        "time": "2025-6-3 16:04:33",
+        "amount": 70179,
+        "count": 9,
+        "transaction_id": "738903",
+        "transaction_type": "企业付款"
+    },
+    {
+        "time": "2025-6-3 16:04:51",
+        "amount": 72806,
+        "count": 41,
+        "transaction_id": "656127",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025-6-3 16:05:05",
+        "amount": 60628,
+        "count": 67,
+        "transaction_id": "751356",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025-6-3 16:05:07",
+        "amount": 72485,
+        "count": 51,
+        "transaction_id": "747307",
+        "transaction_type": "代金券"
+    },
+    {
+        "time": "2025-6-3 16:05:09",
+        "amount": 23482,
+        "count": 66,
+        "transaction_id": "855724",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025-6-3 16:05:17",
+        "amount": 71610,
+        "count": 56,
+        "transaction_id": "274821",
+        "transaction_type": "交易"
+    },
+    {
+        "time": "2025/6/3 16:05:38",
+        "amount": 31559,
+        "count": 68,
+        "transaction_id": "788132",
+        "transaction_type": "交易"
+    },
+    {
+        "time": "2025/6/3 16:05:46",
+        "amount": 70916,
+        "count": 23,
+        "transaction_id": "610619",
+        "transaction_type": "企业付款"
+    },
+    {
+        "time": "2025/6/3 16:05:58",
+        "amount": 703,
+        "count": 69,
+        "transaction_id": "834979",
+        "transaction_type": "交易"
+    },
+    {
+        "time": "2025/6/3 16:06:00",
+        "amount": 45935,
+        "count": 68,
+        "transaction_id": "298395",
+        "transaction_type": "退款"
+    },
+    {
+        "time": "2025/6/3 16:06:50",
+        "amount": 72227,
+        "count": 64,
+        "transaction_id": "741735",
+        "transaction_type": "充值"
+    },
+    {
+        "time": "2025/6/3 16:08:23",
+        "amount": 71688,
+        "count": 68,
+        "transaction_id": "626014",
+        "transaction_type": "交易"
+    }
+]

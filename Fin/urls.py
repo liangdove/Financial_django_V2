@@ -8,6 +8,7 @@ urlpatterns = [
     path('1/', views.main_GCN_output, name="GCN_main"),
     path("2/", views.main_GraphSage_output, name="GraphSage_main"),
     path("3/", views.main_GEARSage_output, name="GEARSage_main"),
+    path("guard_tool_call/", views.main_GEARSage_output_guard_tool_call, name="GEARSage_main_guard"),
     path("dgraph", views.graph_data, name="dgraph"),
     path("about_us", views.about_us, name="about_us")
 ]

@@ -1,0 +1,82 @@
+/* 悬浮聊天按钮 */
+/* 彩色旋风圆球按钮 */
+.chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(44, 44, 189) 0%, rgb(124, 48, 181) 50%,  rgb(25, 25, 234) 70%, rgb(173, 110, 173) 100%);
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 1.0s ease;
+}
+.chat-toggle:hover {
+    transform: rotate(360deg);
+}
+/* 聊天窗口 */
+.chat-bot {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 320px;
+    height: 400px;
+    background: white;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    display: none;
+    flex-direction: column;
+    z-index: 1100;
+}
+.chat-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.chat-header h5 {
+    margin: 0;
+}
+.chat-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+.chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.chat-footer {
+    display: flex;
+    border-top: 1px solid var(--border-color);
+}
+.chat-footer input[type="text"] {
+    flex: 1;
+    border: none;
+    padding: 10px;
+}
+.chat-footer button {
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+}

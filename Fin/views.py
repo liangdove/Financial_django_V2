@@ -35,6 +35,10 @@ def main_GEARSage_output(request):
     output = main_GEARSage.GEARSage_main(request)
     return HttpResponse(output)
 
+def main_GEARSage_output_guard_tool_call(request):
+    return main_GEARSage.GEARSage_main_guard_tool_call(request)
+    
+
 
 def csv_view(request):
     # 读取CSV文件

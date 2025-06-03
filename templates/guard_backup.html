@@ -1,0 +1,782 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金融安全卫士 - 防诈骗宣传</title>
+    <!-- 使用CDN替代本地Bootstrap -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 添加Font Awesome图标库 -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/Chart.js/3.7.1/chart.min.css" rel="stylesheet">
+    <!-- 使用CDN替代本地jQuery -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <!-- 添加 ECharts -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/extension/bmap/bmap.min.js"></script>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #ff6b35;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #e2f4fd;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #3060c9);
+            color: white;
+            padding: 3rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .header .lead {
+            font-size: 1.4rem;
+            font-weight: 300;
+            margin-bottom: 0;
+        }
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+        .section {
+            padding: 3rem 0;
+        }
+        .section h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        .section h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        .alert-carousel {
+            background-color: #e2f4fd;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin: 2rem 0;
+            padding: 2rem;
+            text-align: center;
+        }
+        .alert-item {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .alert-item h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .counter {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .quick-check {
+            background-color: #e2f4fd;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .quick-check h4 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .table {
+            font-size: 1.1rem;
+        }
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            vertical-align: middle;
+            padding: 1rem;
+        }
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(30, 58, 138, 0.05);
+        }
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+        .btn-primary {
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            border-radius: 50px;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #15297a;
+            border-color: #15297a;
+            box-shadow: 0 6px 15px rgba(30, 58, 138, 0.4);
+            transform: translateY(-2px);
+        }
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        footer h5 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        footer ul li {
+            margin-bottom: 0.8rem;
+        }
+        footer a {
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--secondary-color) !important;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1>金融安全卫士</h1>
+                    <p class="lead">提高警惕，守护您的财产安全</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <!-- 使用在线图标替代本地图片 -->
+                    <i class="fas fa-shield-alt" style="font-size: 120px; color: white;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+    
+    <!-- 模型主页 -->
+    <div class="alert-carousel">
+        <h3 class="mb-3" style="font-size: 1.8rem; font-weight: 600; color: var(--primary-color);">金融反欺诈模型</h3>
+        <a href="{% url 'GCN_main' %}" class="btn btn-primary btn-lg px-5 shadow-sm">进入模型主页</a>
+    </div>
+
+    <!-- 警示数据轮播 -->
+    <div class="alert-carousel">
+        <div class="alert-item bg-danger text-white">
+            <h3>今日拦截异常交易 <span class="counter">1,234</span> 笔</h3>
+        </div>
+        <div class="alert-item bg-warning">
+            <h3>本月保护用户资产 <span class="counter">¥98,765,432</span></h3>
+        </div>
+    </div>
+
+    <!-- 快速检测入口 -->
+    <div class="quick-check">
+        <h4>交易安全速查</h4>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="输入交易金额" id="amountInput">
+                    </div>
+                    <div id="riskResult" class="mt-3"></div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="feature-icon" style="cursor: pointer; transition: transform 0.3s ease;" onclick="checkRisk()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🔍</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 多维度风险扫描工具 -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">多维度风险扫描</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="phoneScan" placeholder="输入可疑电话号码">
+                            <button class="btn btn-outline-danger" onclick="scanPhone()">扫描</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="url" class="form-control" id="urlScan" placeholder="输入可疑网址">
+                            <button class="btn btn-outline-danger" onclick="scanURL()">检测</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="accountScan" placeholder="输入银行账号">
+                            <button class="btn btn-outline-danger" onclick="scanAccount()">验证</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="scanResult" class="mt-3"></div>
+            </div>
+        </div>
+        
+        <!-- 诈骗趋势图表 -->
+        <section class="section">
+            <h2 class="text-center mb-4">金融诈骗趋势分析</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">近期诈骗类型分布</h5>
+                            <div class="chart-container">
+                                <canvas id="fraudTypeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">月度诈骗金额趋势</h5>
+                            <div class="chart-container">
+                                <canvas id="fraudTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 实时诈骗地图 -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">实时诈骗地图</h5>
+                            <div id="fraudMap" style="height: 600px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 常见诈骗类型表格 -->
+        <section class="section">
+            <h2 class="text-center mb-4">常见诈骗类型识别</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>诈骗类型</th>
+                                    <th>特征表现</th>
+                                    <th>防范措施</th>
+                                    <th>危险等级</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>投资理财诈骗</td>
+                                    <td>承诺高回报，要求先交费用</td>
+                                    <td>核实平台资质，不轻信高收益</td>
+                                    <td><span class="badge bg-danger">高危</span></td>
+                                </tr>
+                                <tr>
+                                    <td>冒充客服诈骗</td>
+                                    <td>自称平台客服，要求操作转账</td>
+                                    <td>通过官方渠道联系客服确认</td>
+                                    <td><span class="badge bg-danger">高危</span></td>
+                                </tr>
+                                <tr>
+                                    <td>网购退款诈骗</td>
+                                    <td>谎称商品问题需要退款</td>
+                                    <td>主动联系官方客服处理</td>
+                                    <td><span class="badge bg-warning">中危</span></td>
+                                </tr>
+                                <tr>
+                                    <td>冒充公检法诈骗</td>
+                                    <td>谎称涉案，要求转账核实</td>
+                                    <td>主动联系官方电话确认</td>
+                                    <td><span class="badge bg-danger">高危</span></td>
+                                </tr>
+                                <tr>
+                                    <td>刷单诈骗</td>
+                                    <td>承诺高佣金，要求先付款</td>
+                                    <td>拒绝任何垫付资金的要求</td>
+                                    <td><span class="badge bg-warning">中危</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 防范指南卡片 -->
+        <section class="section">
+            <h2 class="text-center mb-4">金融安全防范指南</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">🔒</div>
+                            <h5 class="card-title">账户安全</h5>
+                            <p class="card-text">定期更换密码，开启双重认证，不在公共设备上保存登录信息。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">📱</div>
+                            <h5 class="card-title">交易安全</h5>
+                            <p class="card-text">大额交易前核实对方身份，使用安全支付通道，保留交易凭证。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">📞</div>
+                            <h5 class="card-title">通讯安全</h5>
+                            <p class="card-text">不点击不明链接，不轻信来电信息，主动验证对方身份。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>金融安全卫士</h5>
+                    <p>守护您的财产安全，提供专业金融防诈骗知识</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">关于我们</a></li>
+                        <li><a href="#" class="text-white">安全资讯</a></li>
+                        <li><a href="#" class="text-white">举报通道</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>联系我们</h5>
+                    <ul class="list-unstyled">
+                        <li>客服热线：400-888-8888</li>
+                        <li>举报电话：110</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p>© 2025 金融安全卫士 版权所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript代码 -->
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 绘制诈骗类型分布图表
+            const typeCtx = document.getElementById('fraudTypeChart').getContext('2d');
+            const typeChart = new Chart(typeCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['投资理财诈骗', '冒充客服诈骗', '网购退款诈骗', '冒充公检法诈骗', '刷单诈骗', '其他'],
+                    datasets: [{
+                        data: [35, 20, 15, 18, 10, 2],
+                        backgroundColor: [
+                            '#dc3545', '#fd7e14', '#ffc107', 
+                            '#20c997', '#0d6efd', '#6c757d'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: '诈骗类型占比(%)'
+                        }
+                    }
+                }
+            });
+
+            // 绘制月度诈骗金额趋势图
+            const trendCtx = document.getElementById('fraudTrendChart').getContext('2d');
+            const trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [{
+                        label: '诈骗案件数(起)',
+                        data: [120, 135, 180, 170, 190, 165],
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: '挽回损失(万元)',
+                        data: [85, 95, 120, 110, 130, 115],
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '近半年诈骗趋势'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // 绘制实时诈骗地图
+            const mapChart = echarts.init(document.getElementById('fraudMap'));
+            
+            // 定义地图数据
+            const mapData = [
+                {name: '北京市', value: 85},
+                {name: '天津市', value: 65},
+                {name: '上海市', value: 95},
+                {name: '重庆市', value: 75},
+                {name: '河北省', value: 45},
+                {name: '河南省', value: 55},
+                {name: '云南省', value: 35},
+                {name: '辽宁省', value: 40},
+                {name: '黑龙江省', value: 30},
+                {name: '湖南省', value: 50},
+                {name: '安徽省', value: 40},
+                {name: '山东省', value: 60},
+                {name: '新疆维吾尔自治区', value: 25},
+                {name: '江苏省', value: 70},
+                {name: '浙江省', value: 80},
+                {name: '江西省', value: 45},
+                {name: '湖北省', value: 55},
+                {name: '广西壮族自治区', value: 40},
+                {name: '甘肃省', value: 30},
+                {name: '山西省', value: 35},
+                {name: '内蒙古自治区', value: 25},
+                {name: '陕西省', value: 40},
+                {name: '吉林省', value: 35},
+                {name: '福建省', value: 50},
+                {name: '贵州省', value: 30},
+                {name: '广东省', value: 90},
+                {name: '青海省', value: 20},
+                {name: '西藏自治区', value: 15},
+                {name: '四川省', value: 65},
+                {name: '宁夏回族自治区', value: 25},
+                {name: '海南省', value: 30},
+                {name: '台湾省', value: 45},
+                {name: '香港特别行政区', value: 55},
+                {name: '澳门特别行政区', value: 20}
+            ];
+
+            // 定义地图配置
+            const mapOption = {
+                title: {
+                    text: '全国诈骗案件分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        console.log('地图提示框参数:', params);
+                        // 查找匹配的数据项
+                        const matchedData = mapData.find(item => item.name === params.name);
+                        const value = matchedData ? matchedData.value : 0;
+                        return params.name + '：' + value + '起案件';
+                    }
+                },
+                visualMap: {
+                    min: 0,
+                    max: 100,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['高', '低'],
+                    calculable: true,
+                    inRange: {
+                        color: ['#e0f3f8', '#045a8d']
+                    }
+                },
+                series: [{
+                    name: '诈骗案件',
+                    type: 'map',
+                    map: 'china',
+                    roam: true,
+                    emphasis: {
+                        label: {
+                            show: true
+                        },
+                        itemStyle: {
+                            areaColor: '#2B91B7'
+                        }
+                    },
+                    data: mapData,
+                    label: {
+                        show: true
+                    }
+                }]
+            };
+
+            // 加载地图数据
+            fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+                .then(response => response.json())
+                .then(geoJson => {
+                    echarts.registerMap('china', geoJson);
+                    mapChart.setOption(mapOption);
+                })
+                .catch(error => {
+                    console.error('加载地图数据失败:', error);
+                    document.getElementById('fraudMap').innerHTML = 
+                        '<div class="alert alert-danger">地图数据加载失败，请刷新重试</div>';
+                });
+
+        
+            // 响应式调整
+            window.addEventListener('resize', function() {
+                mapChart.resize();
+            });
+            
+            // 数字计数器动画效果
+            const counterElements = document.querySelectorAll('.counter');
+            counterElements.forEach(counter => {
+                const target = parseFloat(counter.textContent.replace(/,/g, '').replace('¥', ''));
+                const prefix = counter.textContent.includes('¥') ? '¥' : '';
+                let count = 0;
+                const duration = 2000; // 动画持续时间(毫秒)
+                const frameDuration = 1000 / 60; // 每帧持续时间(毫秒)
+                const totalFrames = Math.round(duration / frameDuration);
+                const increment = target / totalFrames;
+                
+                function updateCount() {
+                    count += increment;
+                    if (count < target) {
+                        counter.textContent = prefix + Math.floor(count).toLocaleString();
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        counter.textContent = prefix + target.toLocaleString();
+                    }
+                }
+                
+                requestAnimationFrame(updateCount);
+            });
+        });
+        
+        // 交易风险检测功能
+        function checkRisk() {
+            const amountInput = document.getElementById('amountInput');
+            const riskResult = document.getElementById('riskResult');
+            const amount = parseFloat(amountInput.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                riskResult.innerHTML = '<div class="alert alert-warning">请输入有效的金额</div>';
+                return;
+            }
+            
+            let riskLevel, riskMessage, riskClass;
+            
+            // 简单的风险评估逻辑
+            if (amount > 50000) {
+                riskLevel = "高风险";
+                riskMessage = "大额交易请务必确认对方身份，建议通过官方渠道核实";
+                riskClass = "danger";
+            } else if (amount > 10000) {
+                riskLevel = "中等风险";
+                riskMessage = "请确认交易目的，谨慎验证对方信息";
+                riskClass = "warning";
+            } else {
+                riskLevel = "低风险";
+                riskMessage = "风险较低，但仍需注意交易安全";
+                riskClass = "success";
+            }
+            
+            riskResult.innerHTML = `
+                <div class="alert alert-${riskClass}">
+                    <h5>${riskLevel}</h5>
+                    <p>${riskMessage}</p>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-${riskClass}" onclick="showRiskDetail()">查看详情</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 显示风险详情
+        function showRiskDetail() {
+            // 这里可以弹出模态框显示更详细的风险信息
+            alert('风险详情：\n1. 陌生账户转账风险\n2. 非官方渠道交易风险\n3. 大额资金安全建议');
+        }
+        
+        // 风险扫描功能
+        function scanPhone() {
+            const phone = document.getElementById('phoneScan').value;
+            const result = document.getElementById('scanResult');
+            
+            if (!phone) {
+                result.innerHTML = '<div class="alert alert-warning">请输入电话号码</div>';
+                return;
+            }
+
+            // 模拟扫描结果
+            const isRisk = Math.random() > 0.7;
+            result.innerHTML = `
+                <div class="alert alert-${isRisk ? 'danger' : 'success'}">
+                    <h5>${isRisk ? '高风险' : '安全'}</h5>
+                    <p>${isRisk ? '该号码已被标记为可疑号码，请谨慎对待' : '该号码未发现异常'}</p>
+                </div>
+            `;
+        }
+
+        function scanURL() {
+            const url = document.getElementById('urlScan').value;
+            const result = document.getElementById('scanResult');
+            
+            if (!url) {
+                result.innerHTML = '<div class="alert alert-warning">请输入网址</div>';
+                return;
+            }
+
+            // 模拟扫描结果
+            const isRisk = Math.random() > 0.7;
+            result.innerHTML = `
+                <div class="alert alert-${isRisk ? 'danger' : 'success'}">
+                    <h5>${isRisk ? '高风险' : '安全'}</h5>
+                    <p>${isRisk ? '该网址可能存在安全风险，建议谨慎访问' : '该网址未发现异常'}</p>
+                </div>
+            `;
+        }
+
+        function scanAccount() {
+            const account = document.getElementById('accountScan').value;
+            const result = document.getElementById('scanResult');
+            
+            if (!account) {
+                result.innerHTML = '<div class="alert alert-warning">请输入银行账号</div>';
+                return;
+            }
+
+            // 模拟扫描结果
+            const isRisk = Math.random() > 0.7;
+            result.innerHTML = `
+                <div class="alert alert-${isRisk ? 'danger' : 'success'}">
+                    <h5>${isRisk ? '高风险' : '安全'}</h5>
+                    <p>${isRisk ? '该账号存在异常交易记录，请谨慎对待' : '该账号未发现异常'}</p>
+                </div>
+            `;
+        }
+        
+        // 警示数据轮播
+        let currentAlertIndex = 0;
+        const alertItems = document.querySelectorAll('.alert-item');
+        
+        function rotateAlerts() {
+            alertItems.forEach((item, index) => {
+                if (index === currentAlertIndex) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            currentAlertIndex = (currentAlertIndex + 1) % alertItems.length;
+        }
+        
+        // 初始化轮播
+        rotateAlerts();
+        setInterval(rotateAlerts, 3000); // 每3秒切换一次
+    </script>
+</body>
+</html>
+
+

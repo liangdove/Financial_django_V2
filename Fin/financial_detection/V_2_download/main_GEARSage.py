@@ -142,3 +142,26 @@ def GEARSage_main(request):
 
     # 渲染 HTML 模板，并将 result_graphsage 传递给前端
     return render(request, 'result_GEARSage.html', {'result_gear': result_gear})
+
+from django.http import JsonResponse
+
+
+def GEARSage_main_guard_tool_call(request):
+    result_gear = None  # 默认值
+    if request.method == 'POST':
+        node_idx = request.POST.get('node_idx')  # 从 POST 请求中获取节点索引
+        if node_idx is not None:
+            try:
+                node_idx = int(node_idx)
+                dic = {0: "正常用户", 1: "欺诈用户"}
+                y_pred = predict(data, node_idx)
+                label_idx = torch.argmax(y_pred).item()  # 预测标签
+                score = y_pred[1].item()  # 置信度
+                score_rounded = round(score, 3)  # 保留3位小数
+                result_gear = f'节点 {node_idx} 预测对应的标签为: {label_idx}\n\n 为 {dic[label_idx]}\n\n 欺诈置信度为 {score_rounded}\n\n 原 {y_pred}'
+            except ValueError:
+                result_gear = "Invalid node index provided."
+        else:
+            result_gear = "No node index provided."
+    return JsonResponse({'result_gear': result_gear})
+        
